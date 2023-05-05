@@ -1,0 +1,42 @@
+# docker-compose.ymlのバージョン定義
+version: '3'
+services:
+# コンテナのサービス名定義
+  web:
+    # コンテナ名の設定
+    container_name: php-book-app-web
+    build:
+      context: .
+      dockerfile: ./Docker/php/Dockerfile
+    # ディレクトリのマウントの設定
+    volumes:
+      - .:/var/www/html:cached
+    # 環境変数 .envではなくこちらを読み込むようにする
+    environment:
+      - APP_DEFAULT_LOCALE=ja-JP
+      - APP_DEFAULT_TIMEZONE=Asia/Tokyo
+      - DATABASE_HOST=php-book-app-db
+      - DATABASE_USER=root
+      - DATABASE_PASS=secret
+      - DATABASE_NAME=qa_app
+    # command
+    command: bash -c "sh docker-init-setup.sh && apache2-foreground"
+    # ポートフォワーディングの設定
+    # ホストの5000番ポートにコンテナの80番ポートをポートフォワードしている
+    ports:
+      - "5000:80"
+  
+  #mysql設定
+  db:
+    container_name:  php-book-app-db
+    build:
+      context: .
+      dockerfile: ./Docker/mysql/Dockerfile
+    volumes:
+      - ./Docker/mysql/sqls:/docker-entrypoint-initdb.d
+      - ./Docker/mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      
+    ports:
+      - "13306:3306"
