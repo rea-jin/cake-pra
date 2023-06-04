@@ -27,6 +27,7 @@ class QuestionsController extends AppController
     public function initialize()
     {
         parent::initialize();
+        $this->loadModel('Answers'); // これでAnswersモデルが使用可能になる
 
         // $this->loadComponent('RequestHandler', [
         //     'enableBeforeRedirect' => false,
@@ -72,5 +73,24 @@ class QuestionsController extends AppController
             $this->Flash->error('質問の投稿に失敗しました');
         }
         $this->set(compact('question')); //失敗したら質問画面へ
+    }
+
+    // 質問詳細画面
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function view(int $id)
+    {
+        $question = $this->Questions->get($id); // findと異なり、存在しなければ404エラー
+
+        $answers = $this
+        ->Answers
+        ->find()
+        ->where(['Answers.question_id' => $id])
+        ->orderAsc('Answers.id')
+        ->all(); // 100件に制限しているのでall()でとる
+        $this->set(compact('question','answers'));
+
     }
 }

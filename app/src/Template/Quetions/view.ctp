@@ -4,11 +4,15 @@
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">
+                <!-- user name -->
                 <i class="fas fa-user-circle"></i> <?= h($question->user->nickname) ?>
             </h5>
+            <!-- 内容 -->
             <p class="card-text"><?= nl2br(h($question->body)) ?></p>
             <p class="card-subtitle mb-2 text-muted">
+                <!-- 作成日 -->
                 <small><?= h($question->created) ?></small>
+                <!-- トータル回答数 -->
                 <small><i class="fas fa-comment-dots"></i> <?= $this->Number->format($answers->count()) ?></small>
             </p>
         </div>
@@ -33,6 +37,7 @@
                     <p class="card-text"><?= nl2br(h($answer->body)) ?></p>
                     <p class="card-subtitle mb-2 text-muted">
                         <small><?= h($answer->created) ?></small>
+                        <!-- userが回答者と同じなら削除ボタン -->
                         <?php if ($this->request->getSession()->read('Auth.User.id') === $answer->user_id): ?>
                             <?= $this->Form->postLink('削除する', ['controller' => 'Answers', 'action' => 'delete', $answer->id],
                                 ['confirm' => '回答を削除します。よろしいですか？'], ['class' => 'card-link']) ?>
