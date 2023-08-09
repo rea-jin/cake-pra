@@ -52,6 +52,7 @@
 <section class="answer-post mb-5">
     <h2 class="mb-3"><i class="fas fa-comment-dots"></i> 回答する</h2>
     <?php if ($this->request->getSession()->read('Auth.User.id')): ?>
+        <!-- 100件まで -->
         <?php if ($answers->count() >= \App\Controller\AnswersController::ANSWER_UPPER_LIMIT): ?>
             <p class="text-center">回答数が上限に達しているためこれ以上回答することはできません</p>
         <?php else: ?>

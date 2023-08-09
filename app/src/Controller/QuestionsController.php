@@ -90,7 +90,30 @@ class QuestionsController extends AppController
         ->where(['Answers.question_id' => $id])
         ->orderAsc('Answers.id')
         ->all(); // 100件に制限しているのでall()でとる
-        $this->set(compact('question','answers'));
 
+        $newAnswer = $this->Answers->newEntity();
+
+        $this->set(compact('question','answers','newAnswer'));
+
+    }
+    /**
+     * 質問削除処理
+     * @param int $id
+     * @return
+     */
+    public function delete(int $id)
+    {
+        $this->request->allowMethod(['post']);
+
+        $question = $this->Questions->get($id);
+        //質問を削除できるのは質問投稿者
+        if($this->Questions->delete($question))
+        {
+            $this->Flash->success('質問を削除しました');
+        }else{
+            $this->Flash->error('質問の削除に失敗しました');
+        }
+
+        return $this->redirect(['action'=>'index']);
     }
 }
